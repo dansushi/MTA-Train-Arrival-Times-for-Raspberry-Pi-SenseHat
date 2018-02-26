@@ -1,7 +1,6 @@
 #!/usr/bin/python
 import sys
-import math
-from random import randint
+import json
 import time
 from sys import exit
 
@@ -31,4 +30,6 @@ O = BLACK
 
 
 global variable
+
+print()
 
