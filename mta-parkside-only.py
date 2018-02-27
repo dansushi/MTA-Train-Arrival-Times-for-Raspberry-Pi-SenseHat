@@ -25,6 +25,21 @@ def mta_datetime_converter(time):
 	convert_from_str_to_UTC_datetime = pd.to_datetime(time, format='%Y-%m-%dT%H:%M:%S')
 	return convert_from_str_to_UTC_datetime
 
+def MTAPIConnectionError():
+	g = (255, 0, 0) # Red
+	b = (0, 0, 0) # Black
+	error_pixels = [
+		g, g, g, b, g, g, b, b,
+		g, b, b, b, g, b, g, b,
+		g, b, b, b, g, b, g, b,
+		g, g, g, b, g, g, b, b,
+		g, b, b, b, g, b, g, b,
+		g, b, b, b, g, b, g, b,
+		g, g, g, b, g, b, g, b,
+		b, b, b, b, b, b, b, b,
+	]
+
+	return error_pixels
 
 # LOGIC
 
@@ -79,7 +94,7 @@ def SenseHatDisplay():
 	BLUE =   (  0,   0, 255)
 	YELLOW = (255, 140,   0)
 	PURPLE = (255,   0, 200)
-	ORANGE = (255, 10,   0)
+	ORANGE = (255,  10,   0)
 	
 	if wts[0][0] == "N" or wts[0][0] == "Q" or wts[0][0] == "R" or wts[0][0] == "W":
 		T = YELLOW
@@ -100,7 +115,6 @@ def SenseHatDisplay():
 	elif wts[0][0] == "L" or wts[0][0] == "S":
 		T = GRAY
 
-	current_pixels = sense.get_pixels()
 	first_wts = wts[0][1]		# Puts first train wait time into variable
 	#	first [] is item in list, i.e. next arriving train in order of arrival
 	#	second [] is route letter [0] / wait time [1]. LEAVE AT [1]
@@ -109,6 +123,7 @@ def SenseHatDisplay():
 		tens_digit = ones(T,B,first_wts[-2])		# Gets second to last char in first_wts string
 	else:
 		tens_digit = ones(T,B,"empty")
+	current_pixels = sense.get_pixels() # Gets current pixels on LED screen to use for last 3 lines
 	sense.set_pixels(
 	tens_digit[0:4]   + ones_digit[0:4]   +
 	tens_digit[4:8]   + ones_digit[4:8]   +
@@ -125,7 +140,11 @@ def main():
 		try:
 			which_direction = "N"		#Which direction do you want to check? (N, S, or B)
 			run_logic(which_direction)
-			SenseHatDisplay()
+			if wts != "":	# Run SenseHatDisplay() if wts is NOT empty)
+				SenseHatDisplay()
+			else:			# Display Error on screen
+				error_pixels = MTAPIConnectionError()
+				sense.set_pixels(error_pixels)
 			time.sleep(5) #sleep X seconds between running logic
 		except (KeyboardInterrupt, SystemExit):
 			sense.clear()
