@@ -13,10 +13,10 @@ import urllib.request, json
 
 from sense_hat import SenseHat
 sense = SenseHat()
-sense.set_rotation(90) 	# Rotates clockwise 90 degrees
+sense.set_rotation(180) 	# Rotates clockwise 90 degrees
 sense.low_light = True	# Makes sure the SenseHat isn't in low light mode. This screws with the RGB values.
 sense.clear()			# Clears the SenseHat screen initially
-
+  
 ''' -----------------------------
 MTA Live Time Checker
 -------------------------------'''
