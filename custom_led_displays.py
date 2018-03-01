@@ -1,3 +1,65 @@
+# LED SenseHat screen with "ER" for ERROR
+def MTAPIConnectionError():
+	g = (150, 0, 0) # Red
+	b = (0, 0, 0) # Black
+	error_pixels = [
+		g, g, g, b, g, g, g, b,
+		g, b, b, b, g, b, b, g,
+		g, b, b, b, g, b, b, g,
+		g, g, g, b, g, g, g, b,
+		g, b, b, b, g, b, b, g,
+		g, b, b, b, g, b, b, g,
+		g, g, g, b, g, b, b, g,
+		b, b, b, b, b, b, b, b,
+	]
+	return error_pixels
+
+# LED SenseHat screen with "ER" for ERROR
+def NoTrainWaitTimeInfo1():
+	w = (10, 10, 10) # White
+	b = (0, 0, 0) # Black
+	error_pixels = [
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		w, w, b, b, b, b, b, b,
+		w, w, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+	]
+	return error_pixels
+	
+def NoTrainWaitTimeInfo2():
+	w = (10, 10, 10) # White
+	b = (0, 0, 0) # Black
+	error_pixels = [
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		w, w, b, w, w, b, b, b,
+		w, w, b, w, w, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+	]
+	return error_pixels
+	
+def NoTrainWaitTimeInfo3():
+	w = (10, 10, 10) # White
+	b = (0, 0, 0) # Black
+	error_pixels = [
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		w, w, b, w, w, b, w, w,
+		w, w, b, w, w, b, w, w,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+		b, b, b, b, b, b, b, b,
+	]
+	return error_pixels
+
 def N_B_S_display(N_B_S):
 	
 	#Colors     r    g    b
