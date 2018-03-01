@@ -1,14 +1,14 @@
 #!/usr/bin/python
 import signal
 import sys
+from sys import exit
 import math
 import time
 import datetime
-import subprocess
 from datetime import timedelta
-import pandas as pd
-from sys import exit
-from custom_led_displays import * # Import custom functions from other file
+import subprocess
+from dateutil import parser
+from custom_led_displays import * # Import custom LED display functions from other file
 import urllib.request, json 
 
 from sense_hat import SenseHat
@@ -56,7 +56,7 @@ current_station = station_list[n]		# Sets current station to the first station i
 
 # Converts MTA's Date and Time to class datetime in UTC for delta comparison)
 def mta_datetime_converter(time):
-	convert_from_str_to_UTC_datetime = pd.to_datetime(time, format='%Y-%m-%dT%H:%M:%S')
+	convert_from_str_to_UTC_datetime = parser.parse(time[:-6],) #[:-6] Removes the time-zone offset so that it plays nice with datetime.now	
 	return convert_from_str_to_UTC_datetime
 
 #Converts wt_dec from string to int, then to binary, without 0b at the front
@@ -225,9 +225,9 @@ def run_logic_NS(current_station,which_direction):
 			route = x["route"]
 			time = x["time"]
 			conv_time = mta_datetime_converter(time)
-				#Uses function to convert the MTA Date and Time string to class datetime in UTC
-			wait_time_secs = timedelta.total_seconds(conv_time - datetime.datetime.utcnow())
-				# find delta/difference in seconds between conv_time and current UTC timewait_time
+				#Uses function to convert the MTA Date and Time string to class datetime in the -05:00 EST timezone
+			wait_time_secs = timedelta.total_seconds(conv_time - datetime.datetime.now())
+				# find delta/difference in seconds between conv_time and current timewait_time
 			wait_time_mins = wait_time_secs / 60
 				# wait time in minutes
 			if wait_time_secs > 60:		#If train is more than one minute away
@@ -345,10 +345,9 @@ def main():
 	
 	while True:
 		try:
-			if subprocess.call(['curl', '-l', 'http://127.0.0.1:5000']) == 0 and is_held == False:	#If connection is okay
+			if subprocess.call(['curl', '-s', 'http://127.0.0.1:5000', '-o' , '/dev/null']) == 0 and is_held == False:	#If connection is okay (code 0) and joystick isn't being held
 				run_logic_NS(current_station,which_direction)						#Then run logic
 				SenseHatDisplay()
-				print("")
 				time.sleep(1.5)
 			elif is_held == True:
 				is_held = False
@@ -364,8 +363,7 @@ def main():
 			
 		except (KeyboardInterrupt, SystemExit): #Allows for clearing SenseHat on keyboard interrupt exit
 			sense.clear()
-			print("\n\nKEYBOARD INTERRUPT EXIT\n")
 			raise
 			
 #Runs Main Program:
-main() 
+main()
