@@ -81,21 +81,6 @@ def wt_bin_to_pixels(T,B,wt_bin):
 			bin_pixels.append(T)
 	return bin_pixels
 
-# LED SenseHat screen with "ER" for ERROR
-def MTAPIConnectionError():
-	g = (255, 0, 0) # Red
-	b = (0, 0, 0) # Black
-	error_pixels = [
-		g, g, g, b, g, g, g, b,
-		g, b, b, b, g, b, b, g,
-		g, b, b, b, g, b, b, g,
-		g, g, g, b, g, g, g, b,
-		g, b, b, b, g, b, b, g,
-		g, b, b, b, g, b, b, g,
-		g, g, g, b, g, b, b, g,
-		b, b, b, b, b, b, b, b,
-	]
-	return error_pixels
 
 # Figures out the color of the number/train line (tr is train number)
 def determine_text_color(tr):
@@ -264,7 +249,7 @@ def SenseHatDisplay():
 	T = WHITE =  (255, 255, 255)	# Text color (default WHITE)
 		
 	# Figures out the wait time for the first train (Digits at the top of the screen)
-	if len(wts) >= 1:	# Checks if there's a 2nd train wait time available	
+	if len(wts) >= 1:	# Checks if there's a 1st train wait time available	
 		T = determine_text_color(0) # Figures out the color of the number/train line for first train
 		first_wts = wts[0][1]		# Puts first train wait time into variable
 		#	first [] is item in list, i.e. next arriving train in order of arrival
@@ -274,10 +259,16 @@ def SenseHatDisplay():
 			tens_digit = ones(T,B,first_wts[-2])		# Gets second to last char in first_wts string
 		else:
 			tens_digit = ones(T,B,"empty")
-	else:
+	else: #If no train times available at all
 		ones_digit = black_pixels()[0:20] # Sets ones_digit pixels to black
 		tens_digit = black_pixels()[0:20] # Sets tens_digit pixels to black
 		print("No first train information")
+		sense.set_pixels(NoTrainWaitTimeInfo1())	# Sets screen with "waiting for train info" display
+		time.sleep(0.75)
+		sense.set_pixels(NoTrainWaitTimeInfo2())	# Sets screen with "waiting for train info" display
+		time.sleep(0.75)
+		sense.set_pixels(NoTrainWaitTimeInfo3())	# Sets screen with "waiting for train info" display
+		time.sleep(0.75)
 			
 	# Figures out the wait time for the second train (upper binary line)
 	if len(wts) >= 2:	# Checks if there's a 2nd train wait time available
