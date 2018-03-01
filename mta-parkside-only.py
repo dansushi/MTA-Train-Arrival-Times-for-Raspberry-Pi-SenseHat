@@ -17,13 +17,20 @@ sense.set_rotation(0)
 sense.low_light = True
 sense.clear()
 
-
 ''' -----------------------------
-MTA Live Time Checker
+NYC MTA Subway Live Train Arrival Time Display for the Raspberry Pi's SenseHat
 
-Description blah blah blah blah 
-blah blah blah blah blah blah 
-blah blah blah blah blah blah 
+This is a personally customized script to display the live train arrival times
+for the station near where I live, Parkside Ave on the Q line.
+It would be pretty simple to take this and customize it for another location
+by changing the station names in the station_list below.
+(Also remember to change the maps in custom_led_displays.py)
+
+NOTE: In order for this script to work,
+you must also be running MTAPI from Jon Thornton:
+https://github.com/jonthornton/MTAPI
+
+Authored by Dan Schneider (2018)
 -------------------------------'''
 
 
