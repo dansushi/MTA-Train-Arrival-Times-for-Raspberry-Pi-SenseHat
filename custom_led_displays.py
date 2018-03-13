@@ -80,14 +80,14 @@ def N_B_S_display(N_B_S):
 		return display
 	elif N_B_S == "B":
 		display = [
-			b, b, b, b, b, b, b, b,
-			b, b, b, b, b, b, b, b,
-			b, b, b, f, f, b, b, b,
-			b, b, f, f, f, f, b, b,
-			b, b, f, f, f, f, b, b,
-			b, b, b, f, f, b, b, b,
-			b, b, b, b, b, b, b, b,
-			b, b, b, b, b, b, b, b,
+			b, b, b, b, f, b, b, b,
+			b, b, b, f, f, f, b, b,
+			b, b, f, b, f, b, f, b,
+			b, b, b, b, f, b, b, b,
+			b, b, b, b, f, b, b, b,
+			b, b, f, b, f, b, f, b,
+			b, b, b, f, f, f, b, b,
+			b, b, b, b, f, b, b, b,
 		]
 		return display
 	elif N_B_S == "S":
