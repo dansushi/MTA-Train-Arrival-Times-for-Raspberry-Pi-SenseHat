@@ -56,7 +56,8 @@ global current_station
 global n
 n = 1									# Initial station number (n) set to 1
 current_station = station_list[n]		# Sets current station to the first station in the list by default
-
+global easy_mode
+easy_mode = False						# Sets to advanced mode by default (Easy mode is off)
 
 '''----------------------------------------------------------------------------'''
 # MINI-FUNCTIONS:
@@ -101,7 +102,6 @@ def wt_bin_to_pixels(T,B,wt_bin):
 
 # Figures out the color of the number/train line (tr is train number)
 def determine_text_color(tr,wts):
-	
 	#Colors     r    g    b
 	BLACK =  (  0,   0,   0)	# Background color (default BLACK)
 	WHITE =  (255, 255, 255)	# Text color (default WHITE)
@@ -170,15 +170,19 @@ def joystick_up(event):
 	global current_station
 	global is_held
 	global which_direction
+	global easy_mode
 
 	if event.action == "pressed" and event.direction == "up":
-		if which_direction == "S": #If up_press on South, change to Both
-			which_direction = "B"
+		if which_direction == "S":		# If up_press on South, change to Both
+			if easy_mode == False:			# If advanced mode is on, go up to "Both" mode
+				which_direction = "B"
+			elif easy_mode == True:			# If easy mode is on, skip up to "N" mode
+				which_direction = "N"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
-		elif which_direction == "B":   #If up_press on Both, change to North
+		elif which_direction == "B":	# If up_press on Both, change to North
 			which_direction = "N"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
-		else:                       #If up_press on North, keep at North
+		else:							# If up_press on North, keep at North
 			which_direction == "N"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
 	if event.action == "held":
@@ -191,15 +195,19 @@ def joystick_down(event):
 	global current_station
 	global is_held
 	global which_direction
+	global easy_mode
 	
 	if event.action == "pressed" and event.direction == "down":
-		if which_direction == "N": #If down_press on North, change to Both
-			which_direction = "B"
+		if which_direction == "N":		 # If down_press on North, change to Both
+			if easy_mode == False:			# If advanced mode is on, go down to "Both" mode
+				which_direction = "B"
+			elif easy_mode == True:			# If easy mode is on, skip down to "S" mode
+				which_direction = "S"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
-		elif which_direction == "B":   #If down_press on Both, change to South
+		elif which_direction == "B":	# If down_press on Both, change to South
 			which_direction = "S"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
-		else:                       #If down_press on South, keep at South
+		else:                       	# If down_press on South, keep at South
 			which_direction == "S"
 			sense.set_pixels(N_B_S_display(which_direction))						# Displays up, both, or down mode
 	if event.action == "held":
@@ -235,11 +243,24 @@ def joystick_right(event):	# Cycles station to the next one in the list
 		pass
 		
 
-def joystick_middle(event):											#LATER, SET THIS TO EASY MODE STUFF
+def joystick_middle(event):				#Toggles Easy Mode on/off
 	global is_held
-	sense.clear(0, 0, 255)
+	global easy_mode
+	global which_direction
+	
+	if event.action == "pressed" and event.direction == "middle":
+		if easy_mode == False:
+			easy_mode = True
+			sense.set_pixels(EasyModeOn())
+			if which_direction == "B":   	#If Direction is Both when easy mode turned on, default to N (Both not available in easy mode)
+				which_direction = "N"
+		elif easy_mode == True:
+			easy_mode = False
+			sense.set_pixels(EasyModeOff())
 	if event.action == "held":
 		is_held = True
+	elif event.action == "released":
+		pass
 		
 '''----------------------------------------------------------------------------'''
 
@@ -283,6 +304,49 @@ def run_logic_Both(current_station,which_direction):
 	SenseHatDisplayBoth(N_wts,S_wts)
 	
 # DISPLAY
+
+def SenseHatDisplayEasy(tr):
+	B = BLACK =  (  0,   0,   0)	# Background color (default BLACK)
+	W = WHITE =  (150, 150, 150)	# WHITE
+	T =          (255, 255, 255)	# Text color (default WHITE)	
+		
+	# Figures out the wait time for the 1st train (Digits at the top of the screen)
+	if len(wts) >= 1:	# Checks if there's a 1st train wait time available	
+		T = determine_text_color(tr,wts) # Figures out the color of the number/train line for train 'tr'
+		first_wts = wts[tr][1]		# Puts first train wait time into variable
+		#	first [] is item in list, i.e. next arriving train in order of arrival
+		#	second [] is route letter [0] / wait time [1]. LEAVE AT [1]
+		ones_digit = ones(T,B,first_wts[-1])		# Gets last char in first_wts string
+		if len(first_wts) > 1:					# If wait time is more than 1 digit (9 mins)
+			tens_digit = ones(T,B,first_wts[-2])		# Gets second to last char in first_wts string
+		else:
+			tens_digit = ones(T,B,"empty")
+	else: #If no train times available at all
+		ones_digit = black_pixels()[0:20] # Sets ones_digit pixels to black
+		tens_digit = black_pixels()[0:20] # Sets tens_digit pixels to black
+		NoTrainInfo()
+
+	if tr == 0:
+		tr_pixel_lines = [W, W, B, B, B, B, B, B, W, W, B, B, B, B, B, B]
+	elif tr == 1:
+		tr_pixel_lines = [B, B, W, W, B, B, B, B, B, B, W, W, B, B, B, B]
+	elif tr == 2:
+		tr_pixel_lines = [B, B, B, B, W, W, B, B, B, B, B, B, W, W, B, B]	
+	elif tr == 3:
+		tr_pixel_lines = [B, B, B, B, B, B, W, W, B, B, B, B, B, B, W, W]	
+		
+	#Sends the pixel information to the LED screen all together
+	sense.set_pixels(
+	tens_digit[0:4]   + ones_digit[0:4]   +		# Pixel Line 1			Current Train in easy mode
+	tens_digit[4:8]   + ones_digit[4:8]   +		# Pixel Line 2
+	tens_digit[8:12]  + ones_digit[8:12]  +		# Pixel Line 3
+	tens_digit[12:16] + ones_digit[12:16] +		# Pixel Line 4
+	tens_digit[16:20] + ones_digit[16:20] +		# Pixel Line 5
+	black_pixels()[0:8] + 						# Pixel Line 6			EMPTY LINE
+	tr_pixel_lines[0:8] +				 		# Pixel Line 7			Square indicating train number
+	tr_pixel_lines[8:16]						# Pixel Line 8			Square indicating train number
+	)
+	
 def SenseHatDisplayNorS():
 	
 	B = BLACK =  (  0,   0,   0)	# Background color (default BLACK)
@@ -412,6 +476,7 @@ def main():
 	
 	global which_direction
 	which_direction = "N"	# Which direction do you want to check? ("N", "S", or "B") (North, South, Both) | "N" is default
+	tr = 0					# tr (Train) defaults to first in list (0)
 	
 	sense.stick.direction_up = joystick_up
 	sense.stick.direction_down = joystick_down
@@ -424,11 +489,19 @@ def main():
 	while True:
 		try:
 			if subprocess.call(['curl', '-s', 'http://127.0.0.1:5000', '-o' , '/dev/null']) == 0 and is_held == False:	#If connection is okay (code 0) and joystick isn't being held
-				if which_direction == "N" or which_direction == "S":
-					run_logic_NorS(current_station,which_direction)						#Then run logic North or South
-					SenseHatDisplayNorS()
-				else:																#Else both
-					run_logic_Both(current_station,which_direction)						#Then run logic Both
+				if easy_mode == False:	# If easy mode is off (Advanced on)
+					if which_direction == "N" or which_direction == "S":
+						run_logic_NorS(current_station,which_direction)					#Then run logic North or South
+						SenseHatDisplayNorS()
+					else:																#Else both
+						run_logic_Both(current_station,which_direction)					#Then run logic Both
+				elif easy_mode == True:	# If easy mode is on
+					run_logic_NorS(current_station,which_direction)					#Then run logic North or South
+					SenseHatDisplayEasy(tr)
+					if tr < (len(wts) - 1):				# If tr hasn't yet reached the last train available
+						tr = tr + 1						# Go to next train
+					else: 								# If tr has reached the last train available
+						tr = 0							# Reset tr to 0
 				time.sleep(1.5)
 			elif is_held == True:
 				is_held = False
