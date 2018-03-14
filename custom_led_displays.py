@@ -14,6 +14,37 @@ def MTAPIConnectionError():
 	]
 	return error_pixels
 
+def EasyModeOn():
+	b =		(  0,   0,   0) #BLACK BACKGROUND
+	f =		(  0, 100,   0) #FOREGROUND (Green)
+	error_pixels = [
+		b, f, b, b, b, b, b, b,
+		f, b, f, b, f, b, f, b,
+		f, f, f, b, f, b, f, b,
+		f, b, f, b, f, f, f, b,
+		b, b, b, b, b, b, b, b,
+		f, f, f, b, f, f, f, b,
+		b, f, b, b, f, b, f, b,
+		b, f, b, b, f, f, f, b,
+	]
+	return error_pixels
+
+def EasyModeOff():
+	b =		(  0,   0,   0) #BLACK BACKGROUND
+	f =		(160,   0,   0) #FOREGROUND (Red)
+	error_pixels = [
+		b, f, b, b, b, b, b, b,
+		f, b, f, b, f, b, f, b,
+		f, f, f, b, f, b, f, b,
+		f, b, f, b, f, f, f, b,
+		b, b, b, b, b, b, b, b,
+		f, f, f, b, f, f, f, b,
+		b, f, b, b, f, b, f, b,
+		b, f, b, b, f, f, f, b,
+	]
+	return error_pixels
+
+	
 # LED SenseHat screen with "ER" for ERROR
 def NoTrainWaitTimeInfo1():
 	w = (10, 10, 10) # White
