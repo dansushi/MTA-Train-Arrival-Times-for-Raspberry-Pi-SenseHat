@@ -326,7 +326,9 @@ def SenseHatDisplayEasy(tr):
 		tens_digit = black_pixels()[0:20] # Sets tens_digit pixels to black
 		NoTrainInfo()
 
-	if tr == 0:
+	if len(wts) == 0:		# If no train times available at all, then tr_pixel_lines is all black.
+		tr_pixel_lines = [B, B, B, B, B, B, B, B, B, B, B, B, B, B, B, B]
+	elif tr == 0:
 		tr_pixel_lines = [W, W, B, B, B, B, B, B, W, W, B, B, B, B, B, B]
 	elif tr == 1:
 		tr_pixel_lines = [B, B, W, W, B, B, B, B, B, B, W, W, B, B, B, B]
