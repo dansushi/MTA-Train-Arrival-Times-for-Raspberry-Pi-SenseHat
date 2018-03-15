@@ -312,7 +312,6 @@ def SenseHatDisplayEasy(tr):
 		
 	# Figures out the wait time for the 1st train (Digits at the top of the screen)
 	if len(wts) >= 1:	# Checks if there's a 1st train wait time available	
-		print("tr is:",tr)
 		T = determine_text_color(tr,wts) # Figures out the color of the number/train line for train 'tr'
 		first_wts = wts[tr][1]		# Puts first train wait time into variable
 		#	first [] is item in list, i.e. next arriving train in order of arrival
@@ -491,9 +490,9 @@ def main():
 	
 	while True:
 		try:
-			print("before looking at 127.0.0.1:5000")
+			#print("Before 'curl'ing at MTAPI JSON file")
 			if subprocess.call(['curl', '-s', 'http://127.0.0.1:5000', '-o' , '/dev/null']) == 0 and is_held == False:	#If connection is okay (code 0) and joystick isn't being held
-				print("after looking at 127.0.0.1:5000")
+				#print("After 'curl'ing at MTAPI JSON file")
 				if easy_mode == False:	# If easy mode is off (Advanced on)
 					if which_direction == "N" or which_direction == "S":
 						run_logic_NorS(current_station,which_direction)					#Then run logic North or South
@@ -505,9 +504,13 @@ def main():
 					if tr < (len(wts) - 1):				# If tr hasn't yet reached the last train available
 						SenseHatDisplayEasy(tr)
 						tr = tr + 1						# Go to next train
-					else: 								# If tr has reached the last train available
+					elif tr == (len(wts) - 1):			# If tr has reached the last train available
 						SenseHatDisplayEasy(tr)
+						tr = 0							# Reset tr to 0					
+					else: 								# tr > (len(wts) - 1),  therefore button was pressed too early, reset to tr = 0
 						tr = 0							# Reset tr to 0
+						SenseHatDisplayEasy(tr)
+						
 				time.sleep(1.5)
 			elif is_held == True:
 				is_held = False
