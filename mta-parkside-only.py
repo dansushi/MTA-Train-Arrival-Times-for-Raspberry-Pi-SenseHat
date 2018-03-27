@@ -57,7 +57,7 @@ global n
 n = 1									# Initial station number (n) set to 1
 current_station = station_list[n]		# Sets current station to the first station in the list by default
 global easy_mode
-easy_mode = False						# Sets to advanced mode by default (Easy mode is off)
+easy_mode = True						# Sets to easy mode by default (Easy mode is on)
 
 '''----------------------------------------------------------------------------'''
 # MINI-FUNCTIONS:
